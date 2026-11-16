@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>once</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=VT323&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="desk" id="desk">
+    <div class="tabs">
+      <span class="brand">once</span>
+      <button class="tab" type="button" data-open="w-about" aria-label="About"><svg data-px="computer" aria-hidden="true"></svg><span>About</span></button>
+      <button class="tab" type="button" data-open="w-pad" aria-label="New post"><svg data-px="note" aria-hidden="true"></svg><span>New post</span></button>
+      <button class="tab" type="button" data-open="w-login" id="tab-login" aria-label="Sign in"><svg data-px="folder" aria-hidden="true"></svg><span>Sign in</span></button>
+      <button class="tab" type="button" data-open="w-join" id="tab-join" aria-label="Join"><svg data-px="heart" aria-hidden="true"></svg><span>Join</span></button>
+    </div>
+
+    <div class="board">
+      <div class="stage" id="stage">
+        <div class="ring" id="ring"></div>
+        <div class="empty win" id="empty" hidden>
+          <header class="tb"><span class="tt">board.txt</span></header>
+          <div class="body">
+            <p class="hint" id="empty-text">No cards yet. Be the first to write one.</p>
+            <button class="b go" type="button" data-open="w-pad">New post</button>
+          </div>
+        </div>
+      </div>
+      <div class="dock"><span class="pos" id="pos"></span></div>
+    </div>
+  </div>
+
+  <div class="layer" id="layer" hidden>
+    <section class="win float wide" id="w-pad" style="--bar:var(--sun)" role="dialog" aria-labelledby="t-pad" hidden>
+      <header class="tb"><span class="tt" id="t-pad">new_post.txt - Notepad</span><button class="x" type="button" data-close aria-label="Close">x</button></header>
+      <form id="form" novalidate>
+        <label for="f-title">Title</label>
+        <input class="well" id="f-title" type="text" maxlength="60" placeholder="Saw a rainbow on my way home" autocomplete="off">
+        <label for="f-text">Your post</label>
+        <textarea class="well" id="f-text" rows="5" maxlength="400" placeholder="Type here..."></textarea>
+        <span class="lbl">Picture for the left side (optional, up to 5MB)</span>
+        <div class="pick"><div class="thumb" id="thumb"></div><input type="file" id="f-photo" accept="image/jpeg,image/png,image/gif,image/webp"><label class="b" for="f-photo">Choose a picture</label><button class="b" type="button" id="unpick" hidden>Remove</button></div>
+        <p class="err" id="err" role="alert"></p>
+        <div class="row"><button class="b" type="button" data-close>Cancel</button><button class="b go" type="submit" id="f-submit">Post</button></div>
+      </form>
+    </section>
+
+    <section class="win float" id="w-login" style="--bar:var(--blue)" role="dialog" aria-labelledby="t-login" hidden>
+      <header class="tb"><span class="tt" id="t-login">Sign in</span><button class="x" type="button" data-close aria-label="Close">x</button></header>
+      <form id="login" novalidate>
+        <p class="err" id="l-why" hidden></p>
+        <label for="l-email">Email</label>
+        <input class="well" id="l-email" type="email" placeholder="you@example.com" autocomplete="username">
+        <label for="l-pass">Password</label>
+        <input class="well" id="l-pass" type="password" autocomplete="current-password">
+        <p class="err" id="l-err" role="alert"></p>
+        <div class="row"><button class="b" type="button" data-open="w-join">Join instead</button><button class="b go" type="submit">Sign in</button></div>
+      </form>
+    </section>
+
+    <section class="win float" id="w-join" style="--bar:var(--mint)" role="dialog" aria-labelledby="t-join" hidden>
+      <header class="tb"><span class="tt" id="t-join">Join once</span><button class="x" type="button" data-close aria-label="Close">x</button></header>
+      <form id="join" novalidate>
+        <label for="j-name">Nickname</label>
+        <input class="well" id="j-name" type="text" maxlength="50" placeholder="mallang" autocomplete="nickname">
+        <label for="j-email">Email</label>
+        <input class="well" id="j-email" type="email" placeholder="you@example.com" autocomplete="username">
+        <label for="j-pass">Password</label>
+        <input class="well" id="j-pass" type="password" placeholder="at least 8 characters" autocomplete="new-password">
+        <p class="err" id="j-err" role="alert"></p>
+        <div class="row"><button class="b" type="button" data-open="w-login">Sign in instead</button><button class="b go" type="submit">Join</button></div>
+      </form>
+    </section>
+
+    <section class="win float about" id="w-about" style="--bar:var(--pink)" role="dialog" aria-labelledby="t-about" hidden>
+      <header class="tb"><span class="tt" id="t-about">Welcome</span><button class="x" type="button" data-close aria-label="Close">x</button></header>
+      <div class="body">
+        <p class="logo">once</p>
+        <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p class="hint">A little board for everyone.<br>Say it once, say it bright.</p>
+        <p class="hint">Scroll to roll the cards.<br>Be kind. Everyone can read this.</p>
+        <button class="b go" type="button" data-close>OK</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

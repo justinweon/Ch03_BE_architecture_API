@@ -29,3 +29,16 @@ def get_current_user(
     if credentials is None:
         raise UnauthorizedError("인증이 필요합니다.")
     return auth_service.get_user_from_token(credentials.credentials)
+
+
+def get_current_user_optional(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> User | None:
+    """로그인 없이도 볼 수 있는 API 용. 토큰이 없거나 유효하지 않으면 비로그인으로 취급한다."""
+    if credentials is None:
+        return None
+    try:
+        return auth_service.get_user_from_token(credentials.credentials)
+    except UnauthorizedError:
+        return None
