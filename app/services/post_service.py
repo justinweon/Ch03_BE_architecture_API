@@ -47,13 +47,13 @@ class PostService:
         return post
 
     def like(self, post_id: int, user: User) -> Post:
-        post = self.get_post(post_id)
+        post = self.get_post(post_id, user)
         self.post_repo.add_like(post, user.id)
         post.liked_by_me = True
         return post
 
     def unlike(self, post_id: int, user: User) -> Post:
-        post = self.get_post(post_id)
+        post = self.get_post(post_id, user)
         self.post_repo.remove_like(post, user.id)
         post.liked_by_me = False
         return post

@@ -27,9 +27,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="once API",
-    description="once 게시판 API (FastAPI + SQLAlchemy + PostgreSQL + JWT)",
-    version="0.2.0",
+    title="Board API",
+    description="RESTful 게시판 API (FastAPI + SQLAlchemy + PostgreSQL + JWT)",
+    version="0.3.0",
     lifespan=lifespan,
 )
 
