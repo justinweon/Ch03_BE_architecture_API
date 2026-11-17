@@ -54,7 +54,9 @@ main { padding-block: 24px 40px; }
 .btn.primary { background: var(--sun); }
 .btn.primary:hover { background: var(--sun); filter: brightness(1.05); }
 .btn.danger { color: var(--danger); }
-.btn.on { background: var(--pink); }
+.btn.on { background: var(--sun); box-shadow: inset 2px 2px 0 #c27a26; }
+/* 좋아요 표시용 붕어빵 그림. 누른 버튼은 노릇한 바탕에 눌린 그림자 */
+.bung { display: inline-block; width: 25px; height: 14px; flex: none; vertical-align: middle; background: url("bung.svg") no-repeat center / contain; image-rendering: pixelated; }
 .btn[disabled] { opacity: 0.6; cursor: wait; }
 .btn:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, tr[tabindex]:focus-visible { outline: 2px dotted var(--text); outline-offset: 2px; }
 

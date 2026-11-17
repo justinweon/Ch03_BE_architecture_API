@@ -80,7 +80,7 @@ async function listView(page) {
 
   const head = h("div", { class: "head" },
     h("h1", {}, "전체 글", h("span", { class: "count" }, `${data.total}개`)),
-    h("a", { class: "btn primary", href: "#write" }, "글쓰기"));
+    h("a", { class: "btn primary", href: "#write" }, "글굽기"));
 
   let body;
   if (!data.items.length) {
@@ -96,7 +96,7 @@ async function listView(page) {
         h("td", { class: "num" }, p.like_count));
     });
     body = h("div", { class: "panel tablebox" }, h("table", {},
-      h("thead", {}, h("tr", {}, h("th", { class: "num" }, "번호"), h("th", {}, "제목"), h("th", {}, "작성자"), h("th", { class: "date" }, "작성일"), h("th", { class: "num" }, "좋아요"))),
+      h("thead", {}, h("tr", {}, h("th", { class: "num" }, "번호"), h("th", {}, "제목"), h("th", {}, "작성자"), h("th", { class: "date" }, "작성일"), h("th", { class: "num", "aria-label": "좋아요", title: "좋아요" }, h("span", { class: "bung", "aria-hidden": "true" })))),
       h("tbody", {}, rows)));
   }
 
@@ -119,7 +119,9 @@ async function postView(id) {
   const edited = p.updated_at !== p.created_at ? " (수정됨)" : "";
 
   const likeBtn = h("button", { class: "btn", type: "button" });
-  const paintLike = () => { likeBtn.textContent = `좋아요 ${p.like_count}`; likeBtn.classList.toggle("on", p.liked_by_me); likeBtn.setAttribute("aria-pressed", String(p.liked_by_me)); };
+  const paintLike = () => { // 글자 없이 붕어빵 그림 + 개수. 누른 상태는 버튼 바탕색으로 구분
+    likeBtn.replaceChildren(h("span", { class: "bung", "aria-hidden": "true" }), String(p.like_count));
+    likeBtn.setAttribute("aria-label", `좋아요 ${p.like_count}개`); likeBtn.title = p.liked_by_me ? "좋아요 취소" : "좋아요"; likeBtn.classList.toggle("on", p.liked_by_me); likeBtn.setAttribute("aria-pressed", String(p.liked_by_me)); };
   paintLike();
   likeBtn.addEventListener("click", async () => {
     if (!user) { location.hash = "#login"; return; }
@@ -214,7 +216,7 @@ async function writeView(id) {
   const file = h("input", { type: "file", id: "f-file", accept: "image/jpeg,image/png,image/gif,image/webp" });
   const msg = h("p", { class: "error", role: "alert" });
   const form = h("form", { class: "panel", novalidate: true },
-    h("h1", {}, p ? "글 수정" : "글쓰기"),
+    h("h1", {}, p ? "글 수정" : "글굽기"),
     h("div", { class: "field" }, h("label", { for: "f-title" }, "제목"), title),
     h("div", { class: "field" }, h("label", { for: "f-content" }, "내용"), content),
     h("div", { class: "field" }, h("label", { for: "f-file" }, "사진 ", h("span", { class: "hint" }, p && p.image_url ? "(선택, 새로 고르면 기존 사진을 바꿉니다)" : "(선택, JPG·PNG·GIF·WEBP, 5MB 이하)")), file),
