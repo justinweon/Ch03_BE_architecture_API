@@ -88,6 +88,22 @@ th.num { text-align: right; }
 .actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 2px dashed var(--shade); padding-top: 14px; }
 .actions .group { display: flex; gap: 6px; flex-wrap: wrap; }
 
+/* 댓글: 글 상자 안, 좋아요·목록 버튼 바로 아래 */
+.comments { margin-top: 22px; }
+h2 { font-family: var(--font); font-size: 17px; font-weight: 600; margin: 0; }
+.clist { list-style: none; margin: 10px 0 0; padding: 0; border-top: 2px dashed var(--shade); }
+.clist li { padding: 12px 0; border-bottom: 1px dashed var(--shade); }
+.chead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cmeta { font-size: 13px; color: var(--muted); }
+.cmeta b { color: var(--text); font-weight: 600; }
+.ctext { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cnone { color: var(--muted); text-align: center; }
+.btn.small { font-size: 12px; padding: 2px 8px; }
+.cform { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.cform textarea { min-height: 84px; }
+.comments .alt { margin-top: 14px; }
+.ccount { color: var(--bean); font-size: 13px; margin-left: 6px; white-space: nowrap; }
+
 form.panel { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
 form.narrow { max-width: 420px; margin: 0 auto; }
 .field { display: flex; flex-direction: column; gap: 6px; }

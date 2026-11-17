@@ -46,6 +46,7 @@ class PostResponse(BaseModel):
     content: str
     image_url: str | None = None
     like_count: int = 0
+    comment_count: int = 0
     liked_by_me: bool = False
     author: AuthorResponse
     created_at: datetime

@@ -11,17 +11,17 @@ app/
 ├── main.py            # 앱 생성, 미들웨어, 예외 핸들러, 라우터와 정적 파일 등록
 ├── dependencies.py    # 의존성 주입 (서비스, 현재 사용자)
 ├── core/              # config, database, security(JWT/해싱), exceptions, storage(이미지 저장)
-├── models/            # SQLAlchemy 모델 (User, Post, Like)
+├── models/            # SQLAlchemy 모델 (User, Post, Like, Comment)
 ├── schemas/           # Pydantic 요청/응답 스키마
 ├── repositories/      # DB 접근 (쿼리)
-├── services/          # 비즈니스 로직 (중복 체크, 작성자 검증, 좋아요, 이미지)
-├── routers/           # 엔드포인트 (auth, posts)
+├── services/          # 비즈니스 로직 (중복 체크, 작성자 검증, 좋아요, 이미지, 댓글)
+├── routers/           # 엔드포인트 (auth, posts, comments)
 └── static/            # 게시판 화면 (index.html, styles.css, app.js)
 ```
 
 요청 흐름: `Router → Service → Repository → Model(DB)`
 
-관계: `User 1 ─ N Post`, `User N ─ M Post` (Like 테이블, 사용자·글 조합 유니크)
+관계: `User 1 ─ N Post`, `User N ─ M Post` (Like 테이블, 사용자·글 조합 유니크), `Post 1 ─ N Comment`, `User 1 ─ N Comment`
 
 ## 실행 (로컬)
 
@@ -52,7 +52,7 @@ docker compose up -d --build
 | 주소 | 내용 |
 |---|---|
 | `/#list`, `/#page-2` | 글 목록 (10개씩, 쪽 이동) |
-| `/#post-12` | 글 보기, 좋아요, 작성자에게만 수정·삭제 |
+| `/#post-12` | 글 보기, 좋아요, 댓글, 작성자에게만 수정·삭제 |
 | `/#write`, `/#edit-12` | 글쓰기, 수정 (사진 첨부 가능, 로그인 필요) |
 | `/#login`, `/#signup` | 로그인, 회원가입 |
 
@@ -63,7 +63,7 @@ docker compose up -d --build
 | POST | `/auth/signup` | - | 회원가입 |
 | POST | `/auth/login` | - | 로그인 (JWT 발급) |
 | GET | `/auth/me` | O | 내 정보 |
-| GET | `/posts` | 선택 | 목록 (`page`, `size`). 로그인 시 `liked_by_me` 포함 |
+| GET | `/posts` | 선택 | 목록 (`page`, `size`). 로그인 시 `liked_by_me` 포함, 글마다 `comment_count` 포함 |
 | GET | `/posts/{id}` | 선택 | 단건 조회 |
 | POST | `/posts` | O | 작성 |
 | PATCH | `/posts/{id}` | O (작성자) | 수정 |
@@ -71,5 +71,8 @@ docker compose up -d --build
 | PUT | `/posts/{id}/image` | O (작성자) | 사진 올리기/교체 (JPG·PNG·GIF·WEBP, 5MB 이하) |
 | PUT | `/posts/{id}/like` | O | 좋아요 (여러 번 호출해도 한 번만 반영) |
 | DELETE | `/posts/{id}/like` | O | 좋아요 취소 |
+| GET | `/posts/{id}/comments` | - | 댓글 목록 (오래된 순) |
+| POST | `/posts/{id}/comments` | O | 댓글 작성 (500자 이하) |
+| DELETE | `/posts/{id}/comments/{comment_id}` | O (작성자) | 댓글 삭제 |
 
 에러 응답은 `{"error": {"code", "message", "details"}}` 형식으로 통일됩니다.

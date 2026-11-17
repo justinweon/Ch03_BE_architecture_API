@@ -4,6 +4,7 @@ from sqlalchemy import DateTime, ForeignKey, String, Text, func, select
 from sqlalchemy.orm import Mapped, column_property, mapped_column, relationship
 
 from app.core.database import Base
+from app.models.comment import Comment
 from app.models.like import Like
 
 
@@ -22,10 +23,15 @@ class Post(Base):
 
     author: Mapped["User"] = relationship(back_populates="posts")
     likes: Mapped[list[Like]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
+    comments: Mapped[list[Comment]] = relationship(cascade="all, delete-orphan", passive_deletes=True)
 
     # 글을 조회하는 같은 쿼리 안에서 좋아요 수를 서브쿼리로 계산 (글마다 추가 쿼리 없음)
     like_count: Mapped[int] = column_property(
         select(func.count(Like.id)).where(Like.post_id == id).correlate_except(Like).scalar_subquery()
+    )
+
+    comment_count: Mapped[int] = column_property(
+        select(func.count(Comment.id)).where(Comment.post_id == id).correlate_except(Comment).scalar_subquery()
     )
 
     # 요청한 사용자가 좋아요를 눌렀는지. 서비스 계층에서 채워 주는 값 (DB 컬럼 아님)

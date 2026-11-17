@@ -1,4 +1,4 @@
-// 게시판 화면. 같은 서버의 API(/auth, /posts)를 호출한다.
+// 게시판 화면. 같은 서버의 API(/auth, /posts, /posts/{id}/comments)를 호출한다.
 // 화면 주소: #list, #page-2, #post-12, #write, #edit-12, #login, #signup
 const view = document.getElementById("view");
 const nav = document.getElementById("nav");
@@ -90,7 +90,7 @@ async function listView(page) {
       const open = () => { location.hash = `#post-${p.id}`; };
       return h("tr", { tabindex: "0", onclick: open, onkeydown: e => { if (e.key === "Enter") open(); } },
         h("td", { class: "num" }, p.id),
-        h("td", { class: "title" }, p.title, p.image_url ? h("span", { class: "tag" }, "사진") : null),
+        h("td", { class: "title" }, p.title, p.comment_count ? h("span", { class: "ccount", title: `댓글 ${p.comment_count}개` }, `[${p.comment_count}]`) : null, p.image_url ? h("span", { class: "tag" }, "사진") : null),
         h("td", {}, p.author.username),
         h("td", { class: "date" }, fmt(p.created_at)),
         h("td", { class: "num" }, p.like_count));
@@ -146,7 +146,58 @@ async function postView(id) {
     msg,
     h("div", { class: "actions" },
       h("div", { class: "group" }, likeBtn, h("a", { class: "btn", href: "#list" }, "목록")),
-      mine ? h("div", { class: "group" }, h("a", { class: "btn", href: `#edit-${p.id}` }, "수정"), delBtn) : null)));
+      mine ? h("div", { class: "group" }, h("a", { class: "btn", href: `#edit-${p.id}` }, "수정"), delBtn) : null),
+    commentsBox(p.id)));
+}
+
+/* ---------- 댓글 ---------- */
+// 글 상자 안, 좋아요·목록 버튼 바로 아래에 붙는 댓글 영역. 목록은 누구나 보고, 쓰기는 로그인한 사람만, 삭제는 쓴 사람만.
+function commentsBox(postId) {
+  let items = [];
+  const title = h("h2", {}, "댓글");
+  const list = h("ul", { class: "clist" }, h("li", { class: "cnone" }, "댓글을 불러오는 중입니다."));
+  const msg = h("p", { class: "error", role: "alert" });
+
+  const row = c => {
+    const del = user && user.id === c.author.id ? h("button", { class: "btn danger small", type: "button" }, "삭제") : null;
+    if (del) del.addEventListener("click", async () => {
+      del.disabled = true;
+      try { await api(`/posts/${postId}/comments/${c.id}`, { method: "DELETE" }); items = items.filter(x => x.id !== c.id); msg.textContent = ""; paint(); }
+      catch (e) { del.disabled = false; if (!expired(e)) msg.textContent = e.message; }
+    });
+    return h("li", {},
+      h("div", { class: "chead" }, h("span", { class: "cmeta" }, h("b", {}, c.author.username), ` · ${fmt(c.created_at)}`), del),
+      h("p", { class: "ctext" }, c.content));
+  };
+  const paint = () => {
+    title.replaceChildren("댓글", h("span", { class: "count" }, `${items.length}개`));
+    list.replaceChildren(...(items.length ? items.map(row) : [h("li", { class: "cnone" }, "아직 댓글이 없습니다.")]));
+  };
+
+  let form;
+  if (user) {
+    const input = h("textarea", { id: "c-content", maxlength: "500", required: true, placeholder: "댓글을 남겨 보세요 (500자 이하)" });
+    form = h("form", { class: "cform", novalidate: true },
+      h("label", { for: "c-content" }, "댓글 쓰기"), input, msg,
+      h("div", { class: "row" }, h("button", { class: "btn primary", type: "submit" }, "등록")));
+    form.addEventListener("submit", async ev => {
+      ev.preventDefault();
+      const text = input.value.trim();
+      if (!text) { msg.textContent = "댓글 내용을 입력해 주세요."; return; }
+      msg.textContent = "";
+      await withBusy(form, async () => {
+        try { items.push(await api(`/posts/${postId}/comments`, { method: "POST", json: { content: text } })); input.value = ""; paint(); }
+        catch (e) { if (!expired(e)) msg.textContent = errText(e); }
+      });
+    });
+  } else {
+    form = h("div", {}, msg, h("p", { class: "alt" }, "댓글을 쓰려면 ", h("a", { href: "#login" }, "로그인"), "해 주세요."));
+  }
+
+  api(`/posts/${postId}/comments`)
+    .then(data => { items = data; paint(); })
+    .catch(e => list.replaceChildren(h("li", { class: "cnone" }, e.message)));
+  return h("section", { class: "comments", "aria-label": "댓글" }, title, list, form);
 }
 
 /* ---------- 글쓰기 / 수정 ---------- */

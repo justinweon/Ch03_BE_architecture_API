@@ -5,9 +5,11 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.exceptions import UnauthorizedError
 from app.models.user import User
+from app.repositories.comment_repository import CommentRepository
 from app.repositories.post_repository import PostRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
+from app.services.comment_service import CommentService
 from app.services.post_service import PostService
 
 # Swagger UI 의 Authorize 버튼에 토큰만 붙여넣으면 되는 Bearer 방식
@@ -20,6 +22,10 @@ def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
 
 def get_post_service(db: Session = Depends(get_db)) -> PostService:
     return PostService(PostRepository(db))
+
+
+def get_comment_service(db: Session = Depends(get_db)) -> CommentService:
+    return CommentService(CommentRepository(db), PostRepository(db))
 
 
 def get_current_user(

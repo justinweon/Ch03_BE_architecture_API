@@ -11,7 +11,7 @@ import app.models  # noqa: F401  (모델을 Base.metadata 에 등록)
 from app.core import storage
 from app.core.database import Base, engine
 from app.core.exceptions import register_exception_handlers
-from app.routers import auth, posts
+from app.routers import auth, comments, posts
 
 logger = logging.getLogger("board")
 logging.basicConfig(level=logging.INFO)
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Board API",
     description="RESTful 게시판 API (FastAPI + SQLAlchemy + PostgreSQL + JWT)",
-    version="0.3.0",
+    version="0.4.0",
     lifespan=lifespan,
 )
 
@@ -54,6 +54,7 @@ async def log_requests(request: Request, call_next):
 register_exception_handlers(app)
 app.include_router(auth.router)
 app.include_router(posts.router)
+app.include_router(comments.router)
 
 
 @app.get("/health", tags=["health"], summary="헬스 체크")
