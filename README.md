@@ -52,7 +52,7 @@ uvicorn app.main:app --reload
 | GET | `/auth/me` | O | 내 정보 |
 | GET | `/posts` | - | 글 목록 (`page`, `size`) |
 | GET | `/posts/{id}` | - | 글 보기 |
-| POST | `/posts` | O | 글쓰기 |
+| POST | `/posts` | O | 글굽기 (글쓰기) |
 | PATCH | `/posts/{id}` | 작성자 | 글 수정 |
 | DELETE | `/posts/{id}` | 작성자 | 글 삭제 |
 | PUT | `/posts/{id}/image` | 작성자 | 사진 올리기 (5MB 이하) |
