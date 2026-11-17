@@ -47,6 +47,16 @@ class ForbiddenError(AppException):
     code = "FORBIDDEN"
 
 
+class PayloadTooLargeError(AppException):
+    status_code = 413
+    code = "PAYLOAD_TOO_LARGE"
+
+
+class UnsupportedMediaTypeError(AppException):
+    status_code = 415
+    code = "UNSUPPORTED_MEDIA_TYPE"
+
+
 def _response(status_code: int, code: str, message: str, details: list | None = None) -> JSONResponse:
     body = ErrorResponse(error=ErrorBody(code=code, message=message, details=details))
     return JSONResponse(status_code=status_code, content=body.model_dump(exclude_none=True))

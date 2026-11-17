@@ -1,0 +1,124 @@
+/* 기본 게시판, 픽셀 붕어빵가게 모양.
+   배치는 그대로: 상단 바, 가운데 정렬된 한 단 본문(목록 표 / 글 보기 / 글쓰기 / 로그인).
+   반죽색 격자 바탕 위에 종이봉투색 창, 2px 갈색 테두리, 딱딱한 그림자, 픽셀 글꼴, 천막 줄무늬. 한 가지 밝은 모양만 쓴다. */
+:root {
+  color-scheme: light;
+  /* 붕어빵가게 색: 반죽(바탕), 종이봉투(창), 구운 갈색(글자와 테두리), 팥(머리줄), 노릇한 금색(주요 버튼), 슈크림(꼬리표) */
+  --bg: #f4d9a0;
+  --bg-line: rgba(138, 84, 36, 0.16);
+  --surface: #fbeccb;
+  --paper: #fffaec;
+  --text: #4a2a17;
+  --muted: #86654c;
+  --shade: #d9b983;
+  --pink: #e58a76;
+  --bean: #a8452f;
+  --mint: #f8d97f;
+  --sun: #f2a93b;
+  --hover: #fdeab5;
+  --danger: #a3261f;
+  --shadow: rgba(74, 42, 23, 0.32);
+  /* 영문과 숫자는 Pixelify Sans, 한글은 픽셀 글꼴 Galmuri11 */
+  --font: "Pixelify Sans", "Galmuri11", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  --body: "Galmuri11", "Pixelify Sans", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 15px; line-height: 1.6;
+  background-image: linear-gradient(to right, var(--bg-line) 1px, transparent 1px), linear-gradient(to bottom, var(--bg-line) 1px, transparent 1px);
+  background-size: 24px 24px; min-height: 100vh;
+}
+a { color: inherit; }
+.wrap { max-width: 880px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.top { background: var(--surface); border-bottom: 2px solid var(--text); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 12px; }
+/* 가게 천막: 상단 바 아래의 빨강·크림 줄무늬 */
+.top::after { content: ""; display: block; height: 14px; border-top: 2px solid var(--text);
+  background: repeating-linear-gradient(90deg, var(--bean) 0 24px, var(--paper) 24px 48px); }
+.brand { font-family: var(--font); font-size: 22px; font-weight: 600; text-decoration: none; letter-spacing: 0.04em; text-shadow: 2px 2px 0 var(--sun); display: inline-flex; align-items: center; gap: 8px; }
+/* 붕어빵 픽셀 그림 (bung.svg, 16x9 칸) */
+.brand::before, .empty::before { content: ""; background: url("bung.svg") no-repeat center / contain; image-rendering: pixelated; }
+.brand::before { width: 39px; height: 22px; flex: none; }
+.empty::before { display: block; width: 96px; height: 54px; margin: 0 auto 14px; }
+.nav { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 14px; }
+.nav .who { color: var(--muted); margin-right: 4px; }
+main { padding-block: 24px 40px; }
+.foot { padding-block: 0 32px; font-size: 13px; color: var(--text); }
+.foot a { background: rgba(255, 255, 255, 0.55); padding: 0 4px; }
+
+.btn { font: inherit; font-family: var(--font); font-size: 14px; color: var(--text); background: var(--surface); border: 2px solid var(--text); border-radius: 0; padding: 6px 13px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: inset -2px -2px 0 var(--shade), inset 2px 2px 0 #fff; }
+.btn:hover { background: var(--hover); }
+.btn:active { box-shadow: inset 2px 2px 0 var(--shade); transform: translate(1px, 1px); }
+.btn.primary { background: var(--sun); }
+.btn.primary:hover { background: var(--sun); filter: brightness(1.05); }
+.btn.danger { color: var(--danger); }
+.btn.on { background: var(--pink); }
+.btn[disabled] { opacity: 0.6; cursor: wait; }
+.btn:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, tr[tabindex]:focus-visible { outline: 2px dotted var(--text); outline-offset: 2px; }
+
+.head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+h1 { font-family: var(--font); font-size: 20px; font-weight: 600; margin: 0; }
+.head h1 { background: rgba(255, 255, 255, 0.55); padding: 0 6px; }
+.count { color: var(--muted); font-size: 14px; font-weight: 400; margin-left: 6px; }
+.panel { background: var(--surface); border: 2px solid var(--text); border-radius: 0; box-shadow: 5px 5px 0 var(--shadow); }
+
+.tablebox { overflow-x: auto; background: var(--paper); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { padding: 11px 12px; text-align: left; border-bottom: 1px dashed var(--shade); white-space: nowrap; }
+th { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--paper); background: var(--bean); border-bottom: 2px solid var(--text); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--hover); }
+td.title { white-space: normal; width: 100%; min-width: 180px; overflow-wrap: anywhere; }
+td.num { text-align: right; color: var(--muted); }
+th.num { text-align: right; }
+.tag { font-size: 12px; color: var(--text); background: var(--mint); border: 2px solid var(--text); border-radius: 0; padding: 0 5px; margin-left: 6px; white-space: nowrap; }
+.empty { padding: 48px 16px; text-align: center; color: var(--muted); }
+
+.pager { display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 16px; }
+.pager .btn { min-width: 36px; justify-content: center; padding: 5px 9px; }
+
+.post { padding: 22px 22px 18px; background: var(--paper); }
+.post h1 { font-size: 22px; line-height: 1.35; overflow-wrap: anywhere; }
+.meta { color: var(--muted); font-size: 13px; margin: 6px 0 0; padding-bottom: 14px; border-bottom: 2px dashed var(--shade); }
+.post img { display: block; max-width: 100%; max-height: 520px; border: 2px solid var(--text); border-radius: 0; margin: 18px 0 0; }
+.content { white-space: pre-wrap; overflow-wrap: anywhere; margin: 18px 0 22px; }
+.actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 2px dashed var(--shade); padding-top: 14px; }
+.actions .group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* 댓글: 글 상자 안, 좋아요·목록 버튼 바로 아래 */
+.comments { margin-top: 22px; }
+h2 { font-family: var(--font); font-size: 17px; font-weight: 600; margin: 0; }
+.clist { list-style: none; margin: 10px 0 0; padding: 0; border-top: 2px dashed var(--shade); }
+.clist li { padding: 12px 0; border-bottom: 1px dashed var(--shade); }
+.chead { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cmeta { font-size: 13px; color: var(--muted); }
+.cmeta b { color: var(--text); font-weight: 600; }
+.ctext { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cnone { color: var(--muted); text-align: center; }
+.btn.small { font-size: 12px; padding: 2px 8px; }
+.cform { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.cform textarea { min-height: 84px; }
+.comments .alt { margin-top: 14px; }
+.ccount { color: var(--bean); font-size: 13px; margin-left: 6px; white-space: nowrap; }
+
+form.panel { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+form.narrow { max-width: 420px; margin: 0 auto; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+label, .label { font-family: var(--font); font-size: 13px; font-weight: 600; }
+.hint { font-family: var(--body); font-size: 13px; color: var(--muted); font-weight: 400; }
+input[type="text"], input[type="email"], input[type="password"], textarea { font: inherit; color: var(--text); background: var(--paper); border: 2px solid var(--text); border-radius: 0; padding: 8px 10px; width: 100%; box-shadow: inset 2px 2px 0 var(--shade); }
+textarea { min-height: 220px; resize: vertical; }
+input[type="file"] { font: inherit; font-size: 14px; max-width: 100%; }
+input[type="file"]::file-selector-button { font: inherit; font-family: var(--font); font-size: 13px; color: var(--text); background: var(--surface); border: 2px solid var(--text); padding: 4px 10px; margin-right: 10px; cursor: pointer; box-shadow: inset -2px -2px 0 var(--shade), inset 2px 2px 0 #fff; }
+.error { color: var(--danger); font-size: 14px; margin: 0; min-height: 1.4em; }
+.row { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.alt { text-align: center; font-size: 14px; color: var(--muted); margin: 0; }
+
+@media (max-width: 600px) {
+  th.date, td.date { display: none; }
+  th, td { padding: 10px 8px; }
+  .post, form.panel { padding: 16px; }
+}

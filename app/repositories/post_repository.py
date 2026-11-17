@@ -1,6 +1,8 @@
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, joinedload
 
+from app.models.like import Like
 from app.models.post import Post
 
 
@@ -39,3 +41,25 @@ class PostRepository:
     def delete(self, post: Post) -> None:
         self.db.delete(post)
         self.db.commit()
+
+    def liked_post_ids(self, user_id: int, post_ids: list[int]) -> set[int]:
+        """목록의 글들 중 사용자가 좋아요한 글 id 를 한 번의 쿼리로 조회."""
+        if not post_ids:
+            return set()
+        rows = self.db.scalars(
+            select(Like.post_id).where(Like.user_id == user_id, Like.post_id.in_(post_ids))
+        )
+        return set(rows)
+
+    def add_like(self, post: Post, user_id: int) -> None:
+        # 이미 눌렀으면 아무 일도 하지 않음 (PUT 멱등성). 동시 요청도 유니크 제약으로 안전
+        self.db.execute(
+            insert(Like).values(user_id=user_id, post_id=post.id).on_conflict_do_nothing(constraint="uq_likes_user_post")
+        )
+        self.db.commit()
+        self.db.refresh(post)
+
+    def remove_like(self, post: Post, user_id: int) -> None:
+        self.db.execute(delete(Like).where(Like.user_id == user_id, Like.post_id == post.id))
+        self.db.commit()
+        self.db.refresh(post)
